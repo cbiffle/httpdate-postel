@@ -1,12 +1,12 @@
 [package]
-name = "httpdate"
+name = "httpdate-postel"
 version = "1.0.3"
 authors = ["Pyfisch <pyfisch@posteo.org>"]
 license = "MIT OR Apache-2.0"
 description = "HTTP date parsing and formatting"
 keywords = ["http", "date", "time", "simple", "timestamp"]
 readme = "README.md"
-repository = "https://github.com/pyfisch/httpdate"
+repository = "https://github.com/cbiffle/httpdate-postel"
 edition = "2021"
 rust-version = "1.56"
 
