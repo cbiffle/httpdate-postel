@@ -95,6 +95,15 @@ mod tests {
     }
 
     #[test]
+    fn test2_downcase() {
+        let d = UNIX_EPOCH + Duration::from_secs(1475419451);
+        assert_eq!(
+            d,
+            parse_http_date("sun, 02 oct 2016 14:44:11 gmt").expect("#1")
+        );
+    }
+
+    #[test]
     fn test3() {
         let mut d = UNIX_EPOCH;
         assert_eq!(d, parse_http_date("Thu, 01 Jan 1970 00:00:00 GMT").unwrap());

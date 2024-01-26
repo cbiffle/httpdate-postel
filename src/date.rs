@@ -276,7 +276,7 @@ fn toint_4(s: &[u8]) -> Result<u16, Error> {
 
 fn parse_imf_fixdate(s: &[u8]) -> Result<HttpDate, Error> {
     // Example: `Sun, 06 Nov 1994 08:49:37 GMT`
-    if s.len() != 29 || &s[25..] != b" GMT" || s[16] != b' ' || s[19] != b':' || s[22] != b':' {
+    if s.len() != 29 || !&s[25..].eq_ignore_ascii_case(b" GMT") || s[16] != b' ' || s[19] != b':' || s[22] != b':' {
         return Err(Error(()));
     }
     Ok(HttpDate {
@@ -284,31 +284,56 @@ fn parse_imf_fixdate(s: &[u8]) -> Result<HttpDate, Error> {
         min: toint_2(&s[20..22])?,
         hour: toint_2(&s[17..19])?,
         day: toint_2(&s[5..7])?,
-        mon: match &s[7..12] {
-            b" Jan " => 1,
-            b" Feb " => 2,
-            b" Mar " => 3,
-            b" Apr " => 4,
-            b" May " => 5,
-            b" Jun " => 6,
-            b" Jul " => 7,
-            b" Aug " => 8,
-            b" Sep " => 9,
-            b" Oct " => 10,
-            b" Nov " => 11,
-            b" Dec " => 12,
-            _ => return Err(Error(())),
+        mon: {
+            let mon = &s[7..12];
+            if mon.eq_ignore_ascii_case(b" Jan ") {
+                1
+            } else if mon.eq_ignore_ascii_case(b" Feb ") {
+                2
+            } else if mon.eq_ignore_ascii_case(b" Mar ") {
+                3
+            } else if mon.eq_ignore_ascii_case(b" Apr ") {
+                4
+            } else if mon.eq_ignore_ascii_case(b" May ") {
+                5
+            } else if mon.eq_ignore_ascii_case(b" Jun ") {
+                6
+            } else if mon.eq_ignore_ascii_case(b" Jul ") {
+                7
+            } else if mon.eq_ignore_ascii_case(b" Aug ") {
+                8
+            } else if mon.eq_ignore_ascii_case(b" Sep ") {
+                9
+            } else if mon.eq_ignore_ascii_case(b" Oct ") {
+                10
+            } else if mon.eq_ignore_ascii_case(b" Nov ") {
+                11
+            } else if mon.eq_ignore_ascii_case(b" Dec ") {
+                12
+            } else {
+                return Err(Error(()));
+            }
         },
         year: toint_4(&s[12..16])?,
-        wday: match &s[..5] {
-            b"Mon, " => 1,
-            b"Tue, " => 2,
-            b"Wed, " => 3,
-            b"Thu, " => 4,
-            b"Fri, " => 5,
-            b"Sat, " => 6,
-            b"Sun, " => 7,
-            _ => return Err(Error(())),
+        wday: {
+            let day = &s[..5];
+            if day.eq_ignore_ascii_case(b"Mon, ") {
+                1
+            } else if day.eq_ignore_ascii_case(b"Tue, ") {
+                2
+            } else if day.eq_ignore_ascii_case(b"Wed, ") {
+                3
+            } else if day.eq_ignore_ascii_case(b"Thu, ") {
+                4
+            } else if day.eq_ignore_ascii_case(b"Fri, ") {
+                5
+            } else if day.eq_ignore_ascii_case(b"Sat, ") {
+                6
+            } else if day.eq_ignore_ascii_case(b"Sun, ") {
+                7
+            } else {
+                return Err(Error(()));
+            }
         },
     })
 }
